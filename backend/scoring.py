@@ -49,30 +49,75 @@ def field_coverage(parsed: dict | None, schema: dict) -> float:
 
 def compare_field(predicted: Any, ground_truth: Any) -> bool:
     if ground_truth is None:
-        return predicted is None
+        # null ground truth: predicted should also be null or empty
+        return predicted is None or predicted == "" or predicted == []
+    if predicted is None:
+        # predicted is null but ground truth is not
+        return False
     if isinstance(ground_truth, bool):
-        return predicted == ground_truth
+        if isinstance(predicted, bool):
+            return predicted == ground_truth
+        if isinstance(predicted, str):
+            return predicted.lower() in ("true" if ground_truth else "false")
+        return False
     if isinstance(ground_truth, (int, float)):
         try:
-            return float(predicted) == float(ground_truth)
+            return abs(float(predicted) - float(ground_truth)) < 0.01
         except (TypeError, ValueError):
+            # Try extracting number from string
+            import re
+            nums = re.findall(r"[\d,]+\.?\d*", str(predicted).replace(",", ""))
+            for n in nums:
+                try:
+                    if abs(float(n) - float(ground_truth)) < 0.01:
+                        return True
+                except ValueError:
+                    pass
             return False
     if isinstance(ground_truth, str):
         if not isinstance(predicted, str):
-            return False
-        return ground_truth.strip().lower() in predicted.strip().lower()
+            predicted = str(predicted)
+        gt = ground_truth.strip().lower()
+        pred = predicted.strip().lower()
+        # Direct containment
+        if gt in pred or pred in gt:
+            return True
+        # Key word overlap: if 60%+ of ground truth words appear in prediction
+        gt_words = set(w for w in gt.split() if len(w) > 3)
+        if not gt_words:
+            return gt == pred
+        pred_words = set(pred.split())
+        overlap = len(gt_words & pred_words) / len(gt_words)
+        return overlap >= 0.6
     if isinstance(ground_truth, list):
+        if not ground_truth:
+            return isinstance(predicted, list)
         if not isinstance(predicted, list):
-            return False
+            # Try treating predicted as a single-item list
+            predicted = [str(predicted)]
+        # Each ground truth item should have a match somewhere in predicted
         for gt_item in ground_truth:
-            found = any(
-                gt_item.strip().lower() in p.strip().lower()
-                for p in predicted if isinstance(p, str)
-            )
+            if not isinstance(gt_item, str):
+                continue
+            gt_lower = gt_item.strip().lower()
+            found = False
+            for p in predicted:
+                if not isinstance(p, str):
+                    continue
+                p_lower = p.strip().lower()
+                if gt_lower in p_lower or p_lower in gt_lower:
+                    found = True
+                    break
+                # Word overlap fallback
+                gt_words = set(w for w in gt_lower.split() if len(w) > 3)
+                p_words  = set(p_lower.split())
+                if gt_words and len(gt_words & p_words) / len(gt_words) >= 0.5:
+                    found = True
+                    break
             if not found:
                 return False
         return True
-    return predicted == ground_truth
+    return str(predicted).strip().lower() == str(ground_truth).strip().lower()
 
 
 def score_extraction(parsed: dict | None, ground_truth: dict) -> dict:
