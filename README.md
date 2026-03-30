@@ -40,38 +40,6 @@ GitHub Repo
 - **Verbose** — over-explained, buried request
 - **Casual** — informal, typo-prone
 
-## Deploy in 15 minutes
-
-### Step 1: Fork or create this repo on GitHub
-
-Upload all files maintaining the folder structure above.
-
-### Step 2: Deploy backend to Render
-
-1. Go to render.com and sign in with GitHub
-2. Click **New** and select **Web Service**
-3. Connect this GitHub repo
-4. Render will auto-detect `render.yaml` and configure everything
-5. Click **Deploy**
-6. Wait 3-5 minutes. Copy your service URL (format: `https://your-app.onrender.com`)
-
-### Step 3: Deploy frontend to GitHub Pages
-
-1. In your GitHub repo, go to **Settings** → **Pages**
-2. Source: **Deploy from a branch**
-3. Branch: **main**, folder: **/frontend**
-4. Save. Wait 2 minutes.
-5. Your dashboard is live at `https://yourusername.github.io/repo-name`
-
-### Step 4: Use the dashboard
-
-1. Visit your GitHub Pages URL
-2. Enter your Anthropic API key (`sk-ant-...`) in the top banner
-3. Enter your Render backend URL in the second banner
-4. Click **Test connection** to verify
-5. Select system, task, styles, and sample limit
-6. Click **Run Experiment** and watch results stream in real time
-
 ## Research context
 
 This project tests the conjecture that LLM output failures in enterprise settings
