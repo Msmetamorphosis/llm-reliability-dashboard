@@ -1,0 +1,319 @@
+[
+  {
+    "id": "t1_001",
+    "source": "VA.gov - GI Bill Post-9/11",
+    "document": "The Post-9/11 GI Bill (Chapter 33) provides financial support for education and housing to individuals with at least 90 days of aggregate service after September 10, 2001, or individuals discharged with a service-connected disability after 30 days. You must have received an honorable discharge. Benefits include tuition and fees paid directly to the school, a monthly housing allowance based on the zip code of your school, and a stipend for books and supplies up to $1,000 per academic year. You may transfer unused benefits to dependents if you have at least 6 years of service and agree to serve 4 more years. Applications can be submitted online through VA.gov using VA Form 22-1990.",
+    "ground_truth": {
+      "benefit_name": "Post-9/11 GI Bill (Chapter 33)",
+      "eligibility_criteria": [
+        "Minimum 90 days aggregate service after September 10, 2001",
+        "OR discharged with service-connected disability after 30 days",
+        "Must have received honorable discharge"
+      ],
+      "application_form": "VA Form 22-1990",
+      "application_method": "Online through VA.gov",
+      "max_benefit_amount": null,
+      "housing_allowance": "Monthly, based on zip code of school",
+      "books_stipend_annual": 1000,
+      "transferable_to_dependents": true,
+      "transfer_requirements": "Minimum 6 years service, commit to 4 more years",
+      "required_documents": []
+    }
+  },
+  {
+    "id": "t1_002",
+    "source": "VA.gov - VA Disability Compensation",
+    "document": "VA disability compensation provides monthly tax-free payments to veterans who have a physical or mental condition that was caused or made worse by their military service. To qualify, you must have a current diagnosis of a physical or mental condition, evidence of an in-service event or injury that caused the condition, and a medical link connecting the current condition to your service. Ratings range from 0 to 100 percent in increments of 10. A 100 percent rating currently pays $3,737.85 per month for a veteran with no dependents. Veterans rated at 30 percent or higher may add compensation for dependents. Applications are submitted using VA Form 21-526EZ.",
+    "ground_truth": {
+      "benefit_name": "VA Disability Compensation",
+      "eligibility_criteria": [
+        "Current diagnosis of physical or mental condition",
+        "Evidence of in-service event or injury",
+        "Medical nexus connecting condition to service"
+      ],
+      "application_form": "VA Form 21-526EZ",
+      "application_method": null,
+      "max_benefit_amount": 3737.85,
+      "housing_allowance": null,
+      "books_stipend_annual": null,
+      "transferable_to_dependents": false,
+      "transfer_requirements": null,
+      "required_documents": []
+    }
+  },
+  {
+    "id": "t1_003",
+    "source": "VA.gov - VA Home Loan Guaranty",
+    "document": "The VA home loan program helps veterans, servicemembers, and surviving spouses purchase homes without a down payment in most cases. To be eligible, you must have a valid Certificate of Eligibility (COE), meet lender credit and income standards, and the home must be for your own personal occupancy. The VA does not set a maximum loan amount, but lenders may set their own limits. There is a VA funding fee that ranges from 1.25 percent to 3.3 percent of the loan amount depending on service type and whether you have used the benefit before. Veterans with a service-connected disability rating are exempt from the funding fee. You can apply for your COE through VA.gov, by mail, or through your lender.",
+    "ground_truth": {
+      "benefit_name": "VA Home Loan Guaranty",
+      "eligibility_criteria": [
+        "Valid Certificate of Eligibility (COE)",
+        "Meet lender credit and income standards",
+        "Home must be for personal occupancy"
+      ],
+      "application_form": null,
+      "application_method": "VA.gov, by mail, or through lender",
+      "max_benefit_amount": null,
+      "housing_allowance": null,
+      "books_stipend_annual": null,
+      "transferable_to_dependents": false,
+      "transfer_requirements": null,
+      "required_documents": ["Certificate of Eligibility (COE)"]
+    }
+  },
+  {
+    "id": "t1_004",
+    "source": "VA.gov - Vocational Rehabilitation (Chapter 31)",
+    "document": "VA Vocational Rehabilitation and Employment, also known as VR&E or Chapter 31, helps veterans with service-connected disabilities prepare for, find, and keep suitable jobs. To be eligible, you must have a VA service-connected disability rating of at least 10 percent, or a memorandum rating of 20 percent or more. You must also have an employment handicap. The program provides up to 48 months of services including job training, resume development, job-seeking skills coaching, and on-the-job training. A monthly subsistence allowance is paid during training. Applications are submitted using VA Form 28-1900 or online at VA.gov.",
+    "ground_truth": {
+      "benefit_name": "Vocational Rehabilitation and Employment (Chapter 31 / VR&E)",
+      "eligibility_criteria": [
+        "VA service-connected disability rating of at least 10 percent",
+        "OR memorandum rating of 20 percent or more",
+        "Must have an employment handicap"
+      ],
+      "application_form": "VA Form 28-1900",
+      "application_method": "Online at VA.gov or by form",
+      "max_benefit_amount": null,
+      "housing_allowance": null,
+      "books_stipend_annual": null,
+      "transferable_to_dependents": false,
+      "transfer_requirements": null,
+      "required_documents": []
+    }
+  },
+  {
+    "id": "t1_005",
+    "source": "VA.gov - Survivors and Dependents Educational Assistance (Chapter 35)",
+    "document": "The Survivors and Dependents Educational Assistance (DEA) program, also known as Chapter 35, offers education and training to eligible dependents of veterans who are permanently and totally disabled due to a service-related condition or who died while on active duty or as a result of a service-related condition. Eligible beneficiaries include spouses and children between ages 18 and 26. The monthly payment rate for full-time training is $1,469 as of October 2024. Benefits may be used for college degree programs, vocational training, apprenticeships, and on-the-job training. Maximum entitlement is 45 months of full-time training. Apply using VA Form 22-5490.",
+    "ground_truth": {
+      "benefit_name": "Survivors and Dependents Educational Assistance (DEA / Chapter 35)",
+      "eligibility_criteria": [
+        "Dependent of veteran permanently and totally disabled due to service-related condition",
+        "OR dependent of veteran who died on active duty or from service-related condition",
+        "Spouses eligible",
+        "Children eligible between ages 18 and 26"
+      ],
+      "application_form": "VA Form 22-5490",
+      "application_method": null,
+      "max_benefit_amount": 1469.0,
+      "housing_allowance": null,
+      "books_stipend_annual": null,
+      "transferable_to_dependents": false,
+      "transfer_requirements": null,
+      "required_documents": []
+    }
+  },
+  {
+    "id": "t1_006",
+    "source": "VA.gov - VA Pension",
+    "document": "VA pension is a tax-free monetary benefit payable to low-income, wartime veterans. To qualify, you must have served at least 90 days of active duty with at least 1 day during a wartime period, been discharged under conditions other than dishonorable, and meet income and net worth limits set by Congress. As of December 2023, the Maximum Annual Pension Rate (MAPR) for a veteran without dependents is $16,551 per year. Veterans who need help with daily activities may qualify for Aid and Attendance, which increases the benefit. Applications are filed using VA Form 21P-527EZ.",
+    "ground_truth": {
+      "benefit_name": "VA Pension",
+      "eligibility_criteria": [
+        "Served at least 90 days active duty with 1 day during wartime period",
+        "Discharged under conditions other than dishonorable",
+        "Meet income and net worth limits set by Congress"
+      ],
+      "application_form": "VA Form 21P-527EZ",
+      "application_method": null,
+      "max_benefit_amount": 16551.0,
+      "housing_allowance": null,
+      "books_stipend_annual": null,
+      "transferable_to_dependents": false,
+      "transfer_requirements": null,
+      "required_documents": []
+    }
+  },
+  {
+    "id": "t1_007",
+    "source": "VA.gov - Montgomery GI Bill Active Duty (Chapter 30)",
+    "document": "The Montgomery GI Bill Active Duty (MGIB-AD), also known as Chapter 30, provides up to 36 months of education benefits to veterans and servicemembers who have at least 2 years of active duty. To participate, you must have contributed $100 per month for 12 months, totaling $1,200, which is generally deducted from your pay. You must also have a high school diploma or GED before applying for benefits. The full-time monthly rate as of October 2024 is $2,324. Benefits must be used within 10 years of your last discharge from active duty. Applications use VA Form 22-1990.",
+    "ground_truth": {
+      "benefit_name": "Montgomery GI Bill Active Duty (MGIB-AD / Chapter 30)",
+      "eligibility_criteria": [
+        "Minimum 2 years of active duty",
+        "Contributed $1,200 total ($100/month for 12 months)",
+        "High school diploma or GED required before applying"
+      ],
+      "application_form": "VA Form 22-1990",
+      "application_method": null,
+      "max_benefit_amount": 2324.0,
+      "housing_allowance": null,
+      "books_stipend_annual": null,
+      "transferable_to_dependents": false,
+      "transfer_requirements": null,
+      "required_documents": []
+    }
+  },
+  {
+    "id": "t1_008",
+    "source": "VA.gov - CHAMPVA",
+    "document": "The Civilian Health and Medical Program of the Department of Veterans Affairs (CHAMPVA) is a comprehensive health care benefits program in which the VA shares the cost of covered health care services and supplies with eligible beneficiaries. Eligibility requires being the spouse or child of a veteran who has been rated permanently and totally disabled for a service-connected condition, died from a VA-rated service-connected condition, or died on active duty. Applicants must not be eligible for TRICARE. There is no enrollment fee, but CHAMPVA generally covers 75 percent of the cost of covered services after an annual deductible of $50 per person or $100 per family. Applications use VA Form 10-10d.",
+    "ground_truth": {
+      "benefit_name": "CHAMPVA",
+      "eligibility_criteria": [
+        "Spouse or child of veteran permanently and totally disabled for service-connected condition",
+        "OR spouse or child of veteran who died from VA-rated service-connected condition",
+        "OR spouse or child of veteran who died on active duty",
+        "Must not be eligible for TRICARE"
+      ],
+      "application_form": "VA Form 10-10d",
+      "application_method": null,
+      "max_benefit_amount": null,
+      "housing_allowance": null,
+      "books_stipend_annual": null,
+      "transferable_to_dependents": false,
+      "transfer_requirements": null,
+      "required_documents": []
+    }
+  },
+  {
+    "id": "t1_009",
+    "source": "VA.gov - Specially Adapted Housing Grant",
+    "document": "The Specially Adapted Housing (SAH) grant helps veterans with certain service-connected disabilities buy, build, or modify a home so they can live independently. The most common qualifying disabilities include loss or loss of use of both legs, blindness in both eyes combined with loss of use of one hand, and certain severe burns. The maximum SAH grant amount for fiscal year 2024 is $109,986. Veterans may use the grant up to 3 times as long as the total does not exceed the maximum. A related benefit, the Special Home Adaptation (SHA) grant, has a lower maximum of $22,036 and applies to different qualifying conditions. Applications are submitted using VA Form 26-4555.",
+    "ground_truth": {
+      "benefit_name": "Specially Adapted Housing (SAH) Grant",
+      "eligibility_criteria": [
+        "Loss or loss of use of both legs",
+        "OR blindness in both eyes combined with loss of use of one hand",
+        "OR certain severe burns",
+        "Must have qualifying service-connected disability"
+      ],
+      "application_form": "VA Form 26-4555",
+      "application_method": null,
+      "max_benefit_amount": 109986.0,
+      "housing_allowance": null,
+      "books_stipend_annual": null,
+      "transferable_to_dependents": false,
+      "transfer_requirements": null,
+      "required_documents": []
+    }
+  },
+  {
+    "id": "t1_010",
+    "source": "VA.gov - Dependency and Indemnity Compensation (DIC)",
+    "document": "Dependency and Indemnity Compensation (DIC) is a tax-free monetary benefit generally payable to a surviving spouse, child, or parent of servicemembers who died while on active duty, active duty for training, or inactive duty training, or to survivors of veterans who died from a service-related injury or disease. The surviving spouse base rate as of December 2023 is $1,562.74 per month. Additional allowances are available if the surviving spouse has dependent children, is housebound, or needs aid and attendance. A surviving spouse who remarries after age 57 may retain DIC benefits. Applications use VA Form 21P-534EZ.",
+    "ground_truth": {
+      "benefit_name": "Dependency and Indemnity Compensation (DIC)",
+      "eligibility_criteria": [
+        "Surviving spouse, child, or parent of servicemember who died on active duty",
+        "OR survivor of veteran who died from service-related injury or disease"
+      ],
+      "application_form": "VA Form 21P-534EZ",
+      "application_method": null,
+      "max_benefit_amount": 1562.74,
+      "housing_allowance": null,
+      "books_stipend_annual": null,
+      "transferable_to_dependents": false,
+      "transfer_requirements": null,
+      "required_documents": []
+    }
+  },
+  {
+    "id": "t1_011",
+    "source": "VA.gov - Native American Direct Loan (NADL)",
+    "document": "The Native American Direct Loan (NADL) program helps eligible Native American veterans finance the purchase, construction, or improvement of homes on Federal Trust Land. To be eligible, the veteran must be Native American or the spouse of a Native American, the tribal organization must have a Memorandum of Understanding with the VA, and the veteran must meet standard VA loan eligibility requirements including a valid Certificate of Eligibility. The NADL program offers a fixed interest rate, no down payment requirement in most cases, and no private mortgage insurance. The VA sets and services the loan directly. Applications begin with VA Form 26-1817 or 22-1880.",
+    "ground_truth": {
+      "benefit_name": "Native American Direct Loan (NADL)",
+      "eligibility_criteria": [
+        "Must be Native American veteran or spouse of Native American",
+        "Tribal organization must have Memorandum of Understanding with VA",
+        "Must meet standard VA loan eligibility requirements",
+        "Must have valid Certificate of Eligibility"
+      ],
+      "application_form": "VA Form 26-1817 or 22-1880",
+      "application_method": null,
+      "max_benefit_amount": null,
+      "housing_allowance": null,
+      "books_stipend_annual": null,
+      "transferable_to_dependents": false,
+      "transfer_requirements": null,
+      "required_documents": ["Certificate of Eligibility"]
+    }
+  },
+  {
+    "id": "t1_012",
+    "source": "VA.gov - Aid and Attendance and Housebound Benefits",
+    "document": "Aid and Attendance (A&A) and Housebound benefits are additional pension amounts paid to veterans and survivors who need help with daily activities or are confined to the home. To qualify for Aid and Attendance, a veteran must need another person's help to perform daily activities such as bathing, dressing, or eating, be bedridden, or be a patient in a nursing home due to a mental or physical disability. Housebound benefits apply when a veteran is substantially confined to the home due to a permanent disability. These benefits are added on top of VA pension and do not require a separate application. The additional monthly amount for Aid and Attendance as of 2024 is approximately $828 for a veteran without dependents.",
+    "ground_truth": {
+      "benefit_name": "Aid and Attendance and Housebound Benefits",
+      "eligibility_criteria": [
+        "Need help with daily activities such as bathing, dressing, or eating",
+        "OR bedridden",
+        "OR patient in nursing home due to mental or physical disability",
+        "OR substantially confined to home due to permanent disability (Housebound)"
+      ],
+      "application_form": null,
+      "application_method": "Added to VA Pension, no separate application required",
+      "max_benefit_amount": 828.0,
+      "housing_allowance": null,
+      "books_stipend_annual": null,
+      "transferable_to_dependents": false,
+      "transfer_requirements": null,
+      "required_documents": []
+    }
+  },
+  {
+    "id": "t1_013",
+    "source": "VA.gov - VA Health Care Enrollment",
+    "document": "Veterans who served in the active military, naval, or air service and were discharged under any condition other than dishonorable may apply for VA health care. Veterans with service-connected disabilities, low income, or certain other qualifying factors receive priority enrollment. VA assigns each enrolled veteran to one of eight priority groups based on disability rating, income, and other factors. Priority Group 1 veterans include those with service-connected disabilities rated 50 percent or more or determined to be unemployable. Co-pays vary by priority group and type of service. Veterans may apply online at VA.gov, by phone, in person at any VA medical facility, or by mail using VA Form 10-10EZ.",
+    "ground_truth": {
+      "benefit_name": "VA Health Care Enrollment",
+      "eligibility_criteria": [
+        "Served in active military, naval, or air service",
+        "Discharged under conditions other than dishonorable"
+      ],
+      "application_form": "VA Form 10-10EZ",
+      "application_method": "Online at VA.gov, by phone, in person at VA medical facility, or by mail",
+      "max_benefit_amount": null,
+      "housing_allowance": null,
+      "books_stipend_annual": null,
+      "transferable_to_dependents": false,
+      "transfer_requirements": null,
+      "required_documents": []
+    }
+  },
+  {
+    "id": "t1_014",
+    "source": "VA.gov - Transition Assistance Program (TAP)",
+    "document": "The Transition Assistance Program (TAP) helps servicemembers and their families transition from military to civilian life. Participation is mandatory for servicemembers separating after more than 180 days of continuous active duty. The core curriculum, called Transition GPS (Goals, Plans, Success), includes 5 days of workshops covering finances, resume writing, job searching, and VA benefits. Servicemembers must also meet Individual Transition Plan requirements and complete the Preseparation Counseling checklist using DD Form 2648. TAP is available at military installations worldwide. Some components are available online through Joint Knowledge Online.",
+    "ground_truth": {
+      "benefit_name": "Transition Assistance Program (TAP)",
+      "eligibility_criteria": [
+        "Servicemembers separating after more than 180 days of continuous active duty",
+        "Participation is mandatory for qualifying servicemembers"
+      ],
+      "application_form": "DD Form 2648",
+      "application_method": "Available at military installations worldwide or online through Joint Knowledge Online",
+      "max_benefit_amount": null,
+      "housing_allowance": null,
+      "books_stipend_annual": null,
+      "transferable_to_dependents": false,
+      "transfer_requirements": null,
+      "required_documents": ["DD Form 2648 (Preseparation Counseling checklist)"]
+    }
+  },
+  {
+    "id": "t1_015",
+    "source": "VA.gov - Caregiver Support Program (PCAFC)",
+    "document": "The Program of Comprehensive Assistance for Family Caregivers (PCAFC) supports caregivers of eligible post-9/11 veterans. To qualify, the veteran must have a serious injury incurred or aggravated in the line of duty on or after September 11, 2001, require at least 6 months of continuous personal care services, and be enrolled in VA health care. Eligible caregivers receive a monthly stipend based on the veteran's care needs, access to health insurance through CHAMPVA if not otherwise covered, mental health services, caregiver training, and respite care. The monthly stipend is tiered based on the level of care required. Applications use VA Form 10-10CG and must be submitted jointly by the veteran and caregiver.",
+    "ground_truth": {
+      "benefit_name": "Program of Comprehensive Assistance for Family Caregivers (PCAFC)",
+      "eligibility_criteria": [
+        "Veteran must have serious injury incurred or aggravated in line of duty on or after September 11, 2001",
+        "Veteran must require at least 6 months of continuous personal care services",
+        "Veteran must be enrolled in VA health care"
+      ],
+      "application_form": "VA Form 10-10CG",
+      "application_method": "Submitted jointly by veteran and caregiver",
+      "max_benefit_amount": null,
+      "housing_allowance": null,
+      "books_stipend_annual": null,
+      "transferable_to_dependents": false,
+      "transfer_requirements": null,
+      "required_documents": []
+    }
+  }
+]
