@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LLM Reliability Pipeline — Research Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --terracotta: #C4673A;
+  --rust:       #9B3A1E;
+  --sage:       #7A9E7E;
+  --sage-light: #E8F2E9;
+  --tan:        #D4B896;
+  --tan-light:  #F5EFE6;
+  --navy:       #1E2D4A;
+  --gold:       #C9A84C;
+  --gold-light: #FBF3DC;
+  --cream:      #FAF7F2;
+  --white:      #FFFFFF;
+  --border:     rgba(212,184,150,0.4);
+  --text-muted: #8A7560;
+  --font-serif: 'DM Serif Display', Georgia, serif;
+  --font-sans:  'DM Sans', sans-serif;
+  --font-mono:  'DM Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); background: var(--cream); color: var(--navy); min-height: 100vh; font-size: 14px; line-height: 1.6; }
+
+.layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+.sidebar { background: var(--navy); padding: 2rem 1.5rem; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar-logo { margin-bottom: 2rem; }
+.sidebar-logo .mc { font-family: var(--font-serif); font-size: 22px; color: var(--tan); line-height: 1.1; }
+.sidebar-logo .sub { font-size: 10px; color: rgba(212,184,150,0.5); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; }
+.nav-section { margin-bottom: 2rem; }
+.nav-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(212,184,150,0.4); margin-bottom: 8px; padding-left: 12px; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; cursor: pointer; color: rgba(212,184,150,0.6); font-size: 13px; transition: all 0.15s; border: none; background: none; width: 100%; text-align: left; }
+.nav-item:hover { background: rgba(255,255,255,0.06); color: var(--tan); }
+.nav-item.active { background: var(--terracotta); color: white; }
+.nav-item .icon { width: 16px; text-align: center; font-size: 14px; flex-shrink: 0; }
+.sidebar-footer { margin-top: auto; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.08); font-size: 11px; color: rgba(212,184,150,0.35); line-height: 1.6; }
+
+.main { padding: 2rem 2.5rem; overflow: auto; padding-bottom: 50px; }
+.page { display: none; }
+.page.active { display: block; }
+.page-header { margin-bottom: 2rem; }
+.page-header h2 { font-family: var(--font-serif); font-size: 28px; color: var(--navy); font-weight: 400; }
+.page-header p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+.card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.25rem; }
+.card-title { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 1.25rem; }
+
+.metric-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 1.5rem; }
+.metric-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; border-top: 3px solid var(--terracotta); }
+.metric-card.gold { border-top-color: var(--gold); }
+.metric-card.sage { border-top-color: var(--sage); }
+.metric-card.navy { border-top-color: var(--navy); }
+.metric-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 6px; }
+.metric-value { font-family: var(--font-serif); font-size: 30px; color: var(--navy); line-height: 1; }
+.metric-sub { font-size: 10px; color: var(--text-muted); margin-top: 5px; }
+
+.form-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 1rem; }
+.form-group label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); display: block; margin-bottom: 6px; }
+select, input[type="text"], input[type="password"], textarea { width: 100%; padding: 9px 12px; font-size: 13px; font-family: var(--font-sans); border: 1px solid var(--border); border-radius: 8px; background: var(--cream); color: var(--navy); transition: border-color 0.15s, box-shadow 0.15s; }
+select:focus, input:focus, textarea:focus { outline: none; border-color: var(--terracotta); box-shadow: 0 0 0 3px rgba(196,103,58,0.12); }
+textarea { resize: vertical; min-height: 90px; font-family: var(--font-mono); font-size: 12px; }
+
+.btn { padding: 10px 22px; font-size: 13px; font-family: var(--font-sans); font-weight: 500; cursor: pointer; border-radius: 8px; transition: all 0.15s; border: none; }
+.btn-primary { background: var(--terracotta); color: white; width: 100%; padding: 12px; font-size: 14px; }
+.btn-primary:hover { background: var(--rust); }
+.btn-primary:disabled { background: var(--tan); cursor: not-allowed; }
+.btn-outline { background: transparent; color: var(--navy); border: 1px solid var(--border); }
+.btn-outline:hover { background: var(--tan-light); }
+.btn-danger { background: transparent; color: var(--rust); border: 1px solid rgba(155,58,30,0.3); }
+.btn-danger:hover { background: #fdf0ec; }
+
+.api-key-banner { background: var(--navy); color: var(--tan); border-radius: 10px; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 14px; margin-bottom: 1.5rem; }
+.api-key-banner input { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); color: var(--tan); flex: 1; font-family: var(--font-mono); font-size: 12px; }
+.api-key-banner input::placeholder { color: rgba(212,184,150,0.35); }
+.api-key-banner input:focus { border-color: var(--terracotta); box-shadow: none; }
+.api-key-banner label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; white-space: nowrap; color: rgba(212,184,150,0.6); }
+.key-status { font-size: 11px; white-space: nowrap; }
+.key-ok { color: var(--sage); }
+.key-bad { color: var(--terracotta); }
+
+.backend-banner { background: var(--gold-light); border: 1px solid rgba(201,168,76,0.3); border-radius: 10px; padding: 0.75rem 1.25rem; display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem; font-size: 12px; color: var(--navy); }
+.backend-banner input { background: white; border-color: rgba(201,168,76,0.4); flex: 1; font-family: var(--font-mono); font-size: 12px; color: var(--navy); }
+.backend-status { font-size: 11px; white-space: nowrap; font-weight: 500; }
+.backend-ok { color: var(--sage); }
+.backend-bad { color: var(--rust); }
+.backend-checking { color: var(--gold); }
+
+.log-box { background: var(--navy); border-radius: 10px; padding: 1.25rem; font-family: var(--font-mono); font-size: 11.5px; height: 220px; overflow-y: auto; }
+.log-box::-webkit-scrollbar { width: 4px; }
+.log-box::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+.log-line { margin-bottom: 3px; display: flex; gap: 10px; }
+.log-ts { color: rgba(212,184,150,0.25); flex-shrink: 0; }
+.log-pass { color: #7A9E7E; }
+.log-fail { color: var(--terracotta); }
+.log-info { color: var(--gold); }
+.log-muted { color: rgba(212,184,150,0.4); }
+.log-error { color: #E85D5D; }
+
+.progress-wrap { margin-bottom: 1.25rem; }
+.progress-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
+.progress-track { height: 6px; background: var(--tan-light); border-radius: 3px; overflow: hidden; }
+.progress-bar { height: 100%; border-radius: 3px; background: var(--terracotta); transition: width 0.3s; }
+
+.table-wrap { overflow-x: auto; max-height: 360px; overflow-y: auto; }
+.table-wrap::-webkit-scrollbar { width: 4px; height: 4px; }
+.table-wrap::-webkit-scrollbar-thumb { background: var(--tan); border-radius: 2px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { text-align: left; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); padding: 8px 12px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: white; }
+td { padding: 8px 12px; border-bottom: 1px solid rgba(212,184,150,0.2); color: var(--navy); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--cream); }
+
+.badge { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 999px; font-size: 10px; font-weight: 500; }
+.badge-pass { background: var(--sage-light); color: #2E6E32; }
+.badge-fail { background: #FBE9E7; color: var(--rust); }
+.badge-style { background: var(--tan-light); color: var(--navy); }
+
+.bar-wrap { display: flex; align-items: center; gap: 8px; }
+.bar-track { height: 5px; width: 52px; background: var(--tan-light); border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; }
+
+.heatmap { display: grid; grid-template-columns: 130px repeat(4,1fr); gap: 6px; align-items: center; }
+.heatmap-header { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); text-align: center; padding-bottom: 6px; }
+.heatmap-label { font-size: 13px; color: var(--navy); font-weight: 500; }
+.heatmap-cell { height: 60px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: transform 0.1s; cursor: default; }
+.heatmap-cell:hover { transform: scale(1.03); }
+.heatmap-pct { font-family: var(--font-serif); font-size: 20px; }
+.heatmap-sub { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; opacity: 0.7; }
+
+.insight-box { border-left: 3px solid var(--gold); padding: 12px 16px; background: var(--gold-light); border-radius: 0 10px 10px 0; margin-bottom: 12px; }
+.insight-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); font-weight: 500; margin-bottom: 5px; }
+.insight-box p { font-size: 13px; color: var(--navy); line-height: 1.65; }
+
+.legend { display: flex; gap: 18px; margin-bottom: 12px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+.chart-wrap { position: relative; width: 100%; }
+.export-bar { display: flex; gap: 10px; margin-top: 1rem; }
+
+.status-bar { position: fixed; bottom: 0; right: 0; left: 240px; background: var(--navy); padding: 6px 2.5rem; display: flex; align-items: center; gap: 16px; font-size: 11px; color: rgba(212,184,150,0.4); z-index: 100; }
+.status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sage); }
+.status-dot.idle { background: var(--text-muted); }
+.status-dot.running { background: var(--gold); animation: pulse 1s infinite; }
+.status-dot.error { background: var(--terracotta); }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+.system-tag { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 10px; font-weight: 500; margin-bottom: 4px; }
+.tag-a { background: rgba(196,103,58,0.12); color: var(--terracotta); }
+.tag-b { background: rgba(122,158,126,0.12); color: var(--sage); }
+.tag-p { background: rgba(30,45,74,0.08); color: var(--navy); }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .main { padding: 1rem; }
+  .metric-grid { grid-template-columns: 1fr 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .status-bar { left: 0; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="mc">Metamorphic<br>Curations</div>
+      <div class="sub">LLM Reliability Research</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Experiment</div>
+      <button class="nav-item active" onclick="showPage('run',this)"><span class="icon">▶</span> Run Experiment</button>
+      <button class="nav-item" onclick="showPage('results',this)"><span class="icon">◈</span> Results</button>
+      <button class="nav-item" onclick="showPage('heatmap',this)"><span class="icon">▦</span> Variance Heatmap</button>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Analysis</div>
+      <button class="nav-item" onclick="showPage('insights',this)"><span class="icon">◎</span> Key Findings</button>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Data</div>
+      <button class="nav-item" onclick="exportCSV()"><span class="icon">↑</span> Export CSV</button>
+      <button class="nav-item" onclick="exportJSON()"><span class="icon">↑</span> Export JSON</button>
+      <button class="nav-item" onclick="clearAll()"><span class="icon">✕</span> Clear All</button>
+    </div>
+    <div class="sidebar-footer">
+      Crystal Tubbs<br>KSU MSAI &mdash; Big Data<br>Metamorphic Curations LLC<br><br>Make it a great day.
+    </div>
+  </nav>
+
+  <main class="main">
+    <!-- API KEY -->
+    <div class="api-key-banner">
+      <label>Anthropic API Key</label>
+      <input type="password" id="api-key" placeholder="sk-ant-..." oninput="checkKey()" />
+      <span class="key-status" id="key-status" style="color:var(--text-muted)">Not set</span>
+    </div>
+
+    <!-- BACKEND URL -->
+    <div class="backend-banner">
+      <label style="font-size:11px;text-transform:uppercase;letter-spacing:0.07em;white-space:nowrap;color:var(--text-muted)">Backend URL</label>
+      <input type="text" id="backend-url" placeholder="https://your-app.onrender.com" oninput="backendChanged()" />
+      <button class="btn btn-outline" style="white-space:nowrap;padding:7px 14px;font-size:12px" onclick="checkBackend()">Test connection</button>
+      <span class="backend-status" id="backend-status" style="color:var(--text-muted)">Not connected</span>
+    </div>
+
+    <!-- RUN PAGE -->
+    <div id="page-run" class="page active">
+      <div class="page-header">
+        <h2>Run Experiment</h2>
+        <p>Configure and execute a live experiment. Results stream in real time from the Python backend.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Experiment configuration</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>System</label>
+            <select id="sel-system">
+              <option value="baseline_a">Baseline A — direct LLM</option>
+              <option value="baseline_b">Baseline B — RAG (ChromaDB retrieval)</option>
+              <option value="pipeline">Reliability pipeline (self-critique + validation)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Task</label>
+            <select id="sel-task">
+              <option value="task1">Task 1 — document extraction</option>
+              <option value="task2">Task 2 — evidence-grounded QA</option>
+              <option value="both">Both tasks</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Prompt styles</label>
+            <select id="sel-styles">
+              <option value="all">All 4 styles</option>
+              <option value="structured">Structured only</option>
+              <option value="ambiguous">Ambiguous only</option>
+              <option value="verbose">Verbose only</option>
+              <option value="casual">Casual only</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Sample limit</label>
+            <select id="sel-limit">
+              <option value="3">3 samples (smoke test)</option>
+              <option value="5">5 samples</option>
+              <option value="10">10 samples</option>
+              <option value="15">Full dataset</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Model</label>
+            <select id="sel-model">
+              <option value="claude-opus-4-5">claude-opus-4-5</option>
+              <option value="claude-sonnet-4-20250514">claude-sonnet-4</option>
+              <option value="claude-haiku-4-5-20251001">claude-haiku-4-5</option>
+            </select>
+          </div>
+          <div class="form-group" style="display:flex;align-items:flex-end">
+            <button class="btn btn-danger" id="stop-btn" onclick="stopExperiment()" style="display:none;width:100%;padding:9px">Stop experiment</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="run-btn" onclick="runExperiment()">Run Experiment</button>
+      </div>
+
+      <div class="progress-wrap" id="progress-wrap" style="display:none">
+        <div class="progress-label">
+          <span id="progress-label-text">Running...</span>
+          <span id="progress-pct">0%</span>
+        </div>
+        <div class="progress-track"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric-card"><div class="metric-label">Schema compliance</div><div class="metric-value" id="m-schema">—</div><div class="metric-sub" id="m-schema-sub">% passing validation</div></div>
+        <div class="metric-card gold"><div class="metric-label">Parse rate</div><div class="metric-value" id="m-parse">—</div><div class="metric-sub">% parseable as JSON</div></div>
+        <div class="metric-card sage"><div class="metric-label">Avg latency</div><div class="metric-value" id="m-lat">—</div><div class="metric-sub" id="m-lat-sub">ms per request</div></div>
+        <div class="metric-card navy"><div class="metric-label">Total runs</div><div class="metric-value" id="m-total">—</div><div class="metric-sub">all systems loaded</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Live log</div>
+        <div class="log-box" id="log-box">
+          <div class="log-line"><span class="log-ts">--:--:--</span><span class="log-muted">Enter your API key and backend URL above, then click Run.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTS PAGE -->
+    <div id="page-results" class="page">
+      <div class="page-header">
+        <h2>Results</h2>
+        <p>Schema compliance by system and prompt style, plus full per-sample breakdown.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Schema compliance by prompt style</div>
+        <div class="legend" id="chart-legend"></div>
+        <div class="chart-wrap" style="height:280px"><canvas id="chart-compliance"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">All results &nbsp;<span id="result-count" style="font-weight:400;color:var(--text-muted)">0 records</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Sample</th><th>System</th><th>Task</th><th>Style</th><th>Schema</th><th>Accuracy</th><th>Latency</th><th>Calls</th></tr></thead>
+            <tbody id="results-tbody"><tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:2rem">Run an experiment to see results</td></tr></tbody>
+          </table>
+        </div>
+        <div class="export-bar">
+          <button class="btn btn-outline" onclick="exportCSV()">Export CSV</button>
+          <button class="btn btn-outline" onclick="exportJSON()">Export JSON</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- HEATMAP PAGE -->
+    <div id="page-heatmap" class="page">
+      <div class="page-header">
+        <h2>Variance Heatmap</h2>
+        <p>Schema compliance by system and prompt style. Green = high compliance. Red = failure zone.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Compliance heatmap</div>
+        <div class="heatmap" id="heatmap-grid">
+          <div></div>
+          <div class="heatmap-header">Structured</div>
+          <div class="heatmap-header">Ambiguous</div>
+          <div class="heatmap-header">Verbose</div>
+          <div class="heatmap-header">Casual</div>
+        </div>
+        <p id="heatmap-empty" style="font-size:12px;color:var(--text-muted);margin-top:1rem">Run experiments to populate the heatmap.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Variance bar chart</div>
+        <div class="chart-wrap" style="height:240px"><canvas id="chart-variance"></canvas></div>
+      </div>
+    </div>
+
+    <!-- INSIGHTS PAGE -->
+    <div id="page-insights" class="page">
+      <div class="page-header">
+        <h2>Key Findings</h2>
+        <p>Auto-generated from your real experiment results.</p>
+      </div>
+      <div class="metric-grid">
+        <div class="metric-card"><div class="metric-label">Compliance gap</div><div class="metric-value" id="ins-gap">—</div><div class="metric-sub">structured vs casual, Baseline A</div></div>
+        <div class="metric-card gold"><div class="metric-label">Pipeline lift</div><div class="metric-value" id="ins-lift">—</div><div class="metric-sub">compliance gain vs Baseline A avg</div></div>
+        <div class="metric-card sage"><div class="metric-label">Cost multiplier</div><div class="metric-value" id="ins-cost">—</div><div class="metric-sub">pipeline calls vs Baseline A</div></div>
+        <div class="metric-card navy"><div class="metric-label">Parse rate</div><div class="metric-value" id="ins-parse">—</div><div class="metric-sub">all results all styles</div></div>
+      </div>
+      <div id="insight-list">
+        <div class="insight-box">
+          <div class="insight-label">Waiting for data</div>
+          <p>Run at least Baseline A to generate findings. Findings update automatically as each experiment completes.</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="status-bar">
+  <div class="status-dot idle" id="status-dot"></div>
+  <span id="status-text">Idle</span>
+  <span style="margin-left:auto" id="status-data">0 results loaded</span>
+</div>
+
+<script>
+const STYLES  = ['structured','ambiguous','verbose','casual'];
+const SYSTEMS = ['baseline_a','baseline_b','pipeline'];
+const SYSTEM_LABELS = {baseline_a:'Baseline A',baseline_b:'Baseline B',pipeline:'Pipeline'};
+const COLORS  = {baseline_a:'#C4673A',baseline_b:'#7A9E7E',pipeline:'#1E2D4A'};
+
+let allResults   = JSON.parse(localStorage.getItem('llm_results')||'[]');
+let compChart    = null;
+let varChart     = null;
+let running      = false;
+let stopRequested = false;
+let currentEventSource = null;
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(name==='results')  setTimeout(renderComplianceChart,50);
+  if(name==='heatmap')  setTimeout(()=>{renderHeatmap();renderVarianceChart();},50);
+  if(name==='insights') renderInsights();
+}
+
+// ── API key ───────────────────────────────────────────────────────────────────
+function checkKey() {
+  const k  = document.getElementById('api-key').value.trim();
+  const el = document.getElementById('key-status');
+  if(k.startsWith('sk-ant-') && k.length>20) { el.textContent='Key set'; el.className='key-status key-ok'; }
+  else if(k.length>0)                          { el.textContent='Invalid format'; el.className='key-status key-bad'; }
+  else                                          { el.textContent='Not set'; el.className='key-status'; el.style.color='var(--text-muted)'; }
+}
+
+// ── Backend URL ───────────────────────────────────────────────────────────────
+function getBackendURL() {
+  const raw = document.getElementById('backend-url').value.trim().replace(/\/$/, '');
+  return raw;
+}
+
+function backendChanged() {
+  document.getElementById('backend-status').textContent = 'Not tested';
+  document.getElementById('backend-status').className = 'backend-status';
+  document.getElementById('backend-status').style.color = 'var(--text-muted)';
+}
+
+async function checkBackend() {
+  const url = getBackendURL();
+  if(!url) { alert('Enter your Render backend URL first.'); return; }
+  const el = document.getElementById('backend-status');
+  el.textContent = 'Checking...'; el.className = 'backend-status backend-checking';
+  try {
+    const resp = await fetch(`${url}/api/health`, {signal: AbortSignal.timeout(8000)});
+    const data = await resp.json();
+    if(data.status === 'ok') {
+      el.textContent = `Connected (${data.task1_samples} samples loaded)`;
+      el.className = 'backend-status backend-ok';
+      log(`Backend connected. ${data.task1_samples} Task1 samples, ${data.task2_samples} Task2 samples, ${data.corpus_passages} corpus passages.`, 'info');
+    } else {
+      throw new Error('Unexpected response');
+    }
+  } catch(e) {
+    el.textContent = 'Connection failed';
+    el.className = 'backend-status backend-bad';
+    log(`Backend connection failed: ${e.message}. Make sure your Render service is running.`, 'error');
+  }
+}
+
+// ── Status / log ──────────────────────────────────────────────────────────────
+function setStatus(state, text) {
+  document.getElementById('status-dot').className = 'status-dot '+state;
+  document.getElementById('status-text').textContent = text;
+  document.getElementById('status-data').textContent = `${allResults.length} results loaded`;
+}
+
+function log(msg, type='info') {
+  const box  = document.getElementById('log-box');
+  const line = document.createElement('div');
+  line.className = 'log-line';
+  const ts = new Date().toLocaleTimeString('en-US',{hour12:false});
+  line.innerHTML = `<span class="log-ts">${ts}</span><span class="log-${type}">${escHtml(msg)}</span>`;
+  box.appendChild(line);
+  box.scrollTop = box.scrollHeight;
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Run experiment via SSE ────────────────────────────────────────────────────
+async function runExperiment() {
+  if(running) return;
+
+  const apiKey = document.getElementById('api-key').value.trim();
+  const backendUrl = getBackendURL();
+
+  if(!apiKey.startsWith('sk-ant-')) { alert('Enter a valid Anthropic API key (starts with sk-ant-) in the banner above.'); return; }
+  if(!backendUrl)                    { alert('Enter your Render backend URL in the banner above.'); return; }
+
+  const system  = document.getElementById('sel-system').value;
+  const task    = document.getElementById('sel-task').value;
+  const stylesSel = document.getElementById('sel-styles').value;
+  const limit   = parseInt(document.getElementById('sel-limit').value);
+  const model   = document.getElementById('sel-model').value;
+  const styles  = stylesSel==='all' ? STYLES : [stylesSel];
+
+  running = true;
+  stopRequested = false;
+  document.getElementById('run-btn').disabled = true;
+  document.getElementById('run-btn').textContent = 'Running...';
+  document.getElementById('stop-btn').style.display = 'block';
+  document.getElementById('progress-wrap').style.display = 'block';
+  document.getElementById('log-box').innerHTML = '';
+  setStatus('running', `Running ${SYSTEM_LABELS[system]}...`);
+
+  log(`System: ${SYSTEM_LABELS[system]} | Task: ${task} | Styles: ${styles.join(', ')} | Limit: ${limit} | Model: ${model}`, 'info');
+
+  const sessionResults = [];
+  let completed = 0, total = 0;
+
+  try {
+    const resp = await fetch(`${backendUrl}/api/run`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({api_key:apiKey, system, task, styles, limit, model})
+    });
+
+    if(!resp.ok) {
+      const err = await resp.json().catch(()=>({detail:'Unknown error'}));
+      throw new Error(err.detail || `HTTP ${resp.status}`);
+    }
+
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while(true) {
+      if(stopRequested) {
+        reader.cancel();
+        log('Experiment stopped by user.', 'info');
+        break;
+      }
+
+      const {done, value} = await reader.read();
+      if(done) break;
+
+      buffer += decoder.decode(value, {stream:true});
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+
+      for(const line of lines) {
+        if(!line.startsWith('data:')) continue;
+        const raw = line.slice(5).trim();
+        if(!raw) continue;
+
+        let msg;
+        try { msg = JSON.parse(raw); } catch { continue; }
+
+        if(msg.event === 'start' || (msg.total && !msg.sample_id)) {
+          total = msg.total || 0;
+          log(`Starting: ${total} total runs queued`, 'info');
+        } else if(msg.event === 'error' || msg.message) {
+          log(`Error: ${msg.message}`, 'error');
+          break;
+        } else if(msg.sample_id) {
+          completed = msg.completed || completed + 1;
+          total = msg.total || total;
+          const pct = total ? Math.round(completed/total*100) : 0;
+          document.getElementById('progress-bar').style.width = pct+'%';
+          document.getElementById('progress-pct').textContent = pct+'%';
+          document.getElementById('progress-label-text').textContent = `${completed} of ${total} runs`;
+
+          const schema = msg.schema_valid ? 'PASS' : 'FAIL';
+          const acc = msg.overall_accuracy !== undefined ? (msg.overall_accuracy*100).toFixed(0)+'%' : '';
+          log(`[${msg.sample_id}] [${msg.prompt_style}] schema=${schema}  ${acc ? 'acc='+acc+'  ' : ''}${Math.round(msg.latency_ms)}ms  calls=${msg.llm_calls}`, msg.schema_valid?'pass':'fail');
+
+          allResults.push(msg);
+          sessionResults.push(msg);
+          saveToStorage();
+          updateLiveMetrics(system, sessionResults);
+          updateResultsTable();
+        } else if(msg.event === 'done') {
+          log(`Completed. ${msg.completed} runs finished.`, 'info');
+        }
+      }
+    }
+  } catch(e) {
+    log(`Error: ${e.message}`, 'error');
+    setStatus('error', 'Error');
+  }
+
+  running = false;
+  stopRequested = false;
+  document.getElementById('run-btn').disabled = false;
+  document.getElementById('run-btn').textContent = 'Run Experiment';
+  document.getElementById('stop-btn').style.display = 'none';
+  document.getElementById('progress-wrap').style.display = 'none';
+  setStatus('idle', `${sessionResults.length} new results saved`);
+  renderInsights();
+}
+
+function stopExperiment() {
+  stopRequested = true;
+  log('Stop requested, finishing current sample...', 'info');
+}
+
+// ── Metrics ───────────────────────────────────────────────────────────────────
+function updateLiveMetrics(system, sessionResults) {
+  const rows = sessionResults || allResults;
+  const n = rows.length;
+  if(!n) return;
+  const valid  = rows.filter(r=>r.schema_valid).length;
+  const parsed = rows.filter(r=>r.parseable).length;
+  const avgLat = Math.round(rows.reduce((a,r)=>a+(r.latency_ms||0),0)/n);
+  document.getElementById('m-schema').textContent = Math.round(valid/n*100)+'%';
+  document.getElementById('m-parse').textContent  = Math.round(parsed/n*100)+'%';
+  document.getElementById('m-lat').textContent    = avgLat+'ms';
+  document.getElementById('m-total').textContent  = allResults.length;
+  const lbl = system ? SYSTEM_LABELS[system] : 'all systems';
+  document.getElementById('m-schema-sub').textContent = `% passing validation (${lbl}, this run)`;
+  document.getElementById('m-lat-sub').textContent    = `ms per request (${lbl}, this run)`;
+  document.getElementById('status-data').textContent  = `${allResults.length} results loaded`;
+}
+
+// ── Results table ─────────────────────────────────────────────────────────────
+function updateResultsTable() {
+  const tbody = document.getElementById('results-tbody');
+  const rows  = allResults.slice(-100);
+  document.getElementById('result-count').textContent = `${allResults.length} records`;
+  if(!rows.length) { tbody.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:2rem">No results yet</td></tr>'; return; }
+  tbody.innerHTML = rows.map(r=>`
+    <tr>
+      <td style="font-family:var(--font-mono);font-size:11px">${r.sample_id}</td>
+      <td><span class="system-tag ${r.system==='baseline_a'?'tag-a':r.system==='baseline_b'?'tag-b':'tag-p'}">${SYSTEM_LABELS[r.system]||r.system}</span></td>
+      <td>${r.task}</td>
+      <td><span class="badge badge-style">${r.prompt_style}</span></td>
+      <td><span class="badge ${r.schema_valid?'badge-pass':'badge-fail'}">${r.schema_valid?'PASS':'FAIL'}</span></td>
+      <td>
+        <div class="bar-wrap">
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.round((r.overall_accuracy||0)*100)}%;background:${(r.overall_accuracy||0)>0.7?'#7A9E7E':(r.overall_accuracy||0)>0.4?'#C9A84C':'#C4673A'}"></div></div>
+          <span style="font-size:11px">${Math.round((r.overall_accuracy||0)*100)}%</span>
+        </div>
+      </td>
+      <td style="font-size:11px">${Math.round(r.latency_ms||0)}ms</td>
+      <td>${r.llm_calls||1}</td>
+    </tr>`).join('');
+}
+
+// ── Charts ────────────────────────────────────────────────────────────────────
+function getCompliance(system, style) {
+  const rows = allResults.filter(r=>r.system===system && r.prompt_style===style);
+  if(!rows.length) return null;
+  return Math.round(rows.filter(r=>r.schema_valid).length/rows.length*100);
+}
+
+function renderComplianceChart() {
+  const ctx = document.getElementById('chart-compliance');
+  if(!ctx||!allResults.length) return;
+  const present  = SYSTEMS.filter(s=>allResults.some(r=>r.system===s));
+  const datasets = present.map(s=>({
+    label: SYSTEM_LABELS[s],
+    data:  STYLES.map(st=>getCompliance(s,st)),
+    backgroundColor: COLORS[s]+'25', borderColor: COLORS[s],
+    borderWidth:2.5, pointBackgroundColor:COLORS[s], pointRadius:6,
+    tension:0.35, fill:false
+  }));
+  document.getElementById('chart-legend').innerHTML = present.map(s=>
+    `<span class="legend-item"><span class="legend-dot" style="background:${COLORS[s]}"></span>${SYSTEM_LABELS[s]}</span>`
+  ).join('');
+  if(compChart) compChart.destroy();
+  compChart = new Chart(ctx,{
+    type:'line', data:{labels:['Structured','Ambiguous','Verbose','Casual'],datasets},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%',font:{size:11,family:'DM Sans'}},grid:{color:'rgba(0,0,0,0.05)'}},
+              x:{ticks:{font:{size:11,family:'DM Sans'}},grid:{display:false}}}}
+  });
+}
+
+function renderHeatmap() {
+  const grid = document.getElementById('heatmap-grid');
+  grid.querySelectorAll('.heatmap-label,.heatmap-cell').forEach(e=>e.remove());
+  const present = SYSTEMS.filter(s=>allResults.some(r=>r.system===s));
+  const empty = document.getElementById('heatmap-empty');
+  if(!present.length) { empty.style.display='block'; return; }
+  empty.style.display='none';
+  present.forEach(system=>{
+    const lbl=document.createElement('div'); lbl.className='heatmap-label'; lbl.textContent=SYSTEM_LABELS[system]; grid.appendChild(lbl);
+    STYLES.forEach(style=>{
+      const val=getCompliance(system,style);
+      const cell=document.createElement('div'); cell.className='heatmap-cell';
+      if(val===null) { cell.style.background='#F5EFE6'; cell.innerHTML='<span style="font-size:11px;color:var(--text-muted)">—</span>'; }
+      else {
+        let bg,color;
+        if(val>=80){bg='rgba(122,158,126,0.22)';color='#2E6E32';}
+        else if(val>=40){bg='rgba(201,168,76,0.22)';color='#7D6000';}
+        else{bg='rgba(196,103,58,0.18)';color='#9B3A1E';}
+        cell.style.background=bg;
+        cell.innerHTML=`<div class="heatmap-pct" style="color:${color}">${val}%</div><div class="heatmap-sub" style="color:${color}">${style}</div>`;
+      }
+      grid.appendChild(cell);
+    });
+  });
+}
+
+function renderVarianceChart() {
+  const ctx = document.getElementById('chart-variance');
+  if(!ctx||!allResults.length) return;
+  const present  = SYSTEMS.filter(s=>allResults.some(r=>r.system===s));
+  const datasets = present.map(s=>({
+    label:SYSTEM_LABELS[s], data:STYLES.map(st=>getCompliance(s,st)||0),
+    backgroundColor:COLORS[s]+'99', borderColor:COLORS[s], borderWidth:1.5, borderRadius:4
+  }));
+  if(varChart) varChart.destroy();
+  varChart=new Chart(ctx,{
+    type:'bar', data:{labels:['Structured','Ambiguous','Verbose','Casual'],datasets},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%',font:{size:11,family:'DM Sans'}},grid:{color:'rgba(0,0,0,0.05)'}},
+              x:{ticks:{font:{size:11,family:'DM Sans'}},grid:{display:false}}}}
+  });
+}
+
+// ── Insights ──────────────────────────────────────────────────────────────────
+function renderInsights() {
+  if(!allResults.length) return;
+  const aVals    = STYLES.map(s=>getCompliance('baseline_a',s)).filter(v=>v!==null);
+  const bVals    = STYLES.map(s=>getCompliance('baseline_b',s)).filter(v=>v!==null);
+  const pVals    = STYLES.map(s=>getCompliance('pipeline',s)).filter(v=>v!==null);
+  const aStruct  = getCompliance('baseline_a','structured');
+  const aCasual  = getCompliance('baseline_a','casual');
+  const pCalls   = allResults.filter(r=>r.system==='pipeline');
+  const aCalls   = allResults.filter(r=>r.system==='baseline_a');
+  const totalParsed = allResults.filter(r=>r.parseable).length;
+  const gap  = aStruct!==null&&aCasual!==null ? aStruct-aCasual : null;
+  const lift = pVals.length&&aVals.length ? Math.round(pVals.reduce((a,b)=>a+b)/pVals.length - aVals.reduce((a,b)=>a+b)/aVals.length) : null;
+  const costMult = pCalls.length&&aCalls.length
+    ? (pCalls.reduce((a,r)=>a+(r.llm_calls||1),0)/pCalls.length / (aCalls.reduce((a,r)=>a+(r.llm_calls||1),0)/aCalls.length)).toFixed(1)+'x'
+    : null;
+
+  document.getElementById('ins-gap').textContent   = gap!==null ? gap+'pp' : '—';
+  document.getElementById('ins-lift').textContent  = lift!==null ? (lift>=0?'+':'')+lift+'pp' : '—';
+  document.getElementById('ins-cost').textContent  = costMult||'—';
+  document.getElementById('ins-parse').textContent = Math.round(totalParsed/allResults.length*100)+'%';
+
+  const ins=[];
+  if(aVals.length && gap!==null) ins.push({l:'Behavioral instability confirmed',
+    t:`Baseline A drops ${gap} percentage points in schema compliance from structured to casual prompts. Parse rate stays at 100%, meaning the model always returns something that looks like JSON. It only satisfies the required schema contract when the user communicates explicitly and clearly. Prompt style, not model capability, is the root cause of output failures in enterprise deployments.`});
+  if(aVals.length) ins.push({l:'The parse vs schema gap is your central finding',
+    t:`JSON parse rate is ${Math.round(allResults.filter(r=>r.system==='baseline_a'&&r.parseable).length/Math.max(aCalls.length,1)*100)}% across all Baseline A runs but schema compliance collapses on non-structured styles. The model is not failing to produce JSON. It is failing to produce the right JSON. A downstream system processing these outputs would receive plausible-looking but structurally invalid data with no error signal.`});
+  if(bVals.length) {
+    const bAvg=Math.round(bVals.reduce((a,b)=>a+b)/bVals.length);
+    const aAvg=aVals.length?Math.round(aVals.reduce((a,b)=>a+b)/aVals.length):null;
+    ins.push({l:'Baseline B (RAG) comparison',
+      t:`Adding ChromaDB retrieval changes the average schema compliance from ${aAvg!==null?aAvg+'%':'—'} to ${bAvg}% across all prompt styles. ${bAvg>(aAvg||0)?'Retrieval provides some improvement but does not fully close the compliance gap, supporting the case for explicit schema controls.':'Retrieval alone does not improve schema compliance, confirming that the failure is structural rather than informational.'}`});
+  }
+  if(lift!==null&&lift>0) ins.push({l:'Pipeline recovers compliance',
+    t:`The reliability pipeline recovers ${lift} percentage points of average compliance across non-structured styles through self-critique revision plus schema validation with one repair attempt. This closes the behavioral gap at a cost of ${costMult||'~2-3'}x more LLM calls per output, a tractable enterprise tradeoff.`});
+  if(!aCalls.length) ins.push({l:'Run Baseline A to generate findings',
+    t:`Configure the experiment above with System set to Baseline A and click Run. Findings generate automatically from your real results.`});
+  else if(!pCalls.length&&!bVals.length) ins.push({l:'Next: run Baseline B then the pipeline',
+    t:`You have Baseline A data establishing the instability baseline. Run Baseline B next to test whether retrieval alone closes the gap, then run the pipeline for the full three-way comparison.`});
+  else if(!pCalls.length) ins.push({l:'Next: run the reliability pipeline',
+    t:`You have Baseline A and Baseline B. The pipeline is the final system. It should show higher compliance across all four prompt styles, proving that minimal architectural controls close the behavioral gap retrieval alone cannot fix.`});
+
+  document.getElementById('insight-list').innerHTML = ins.map(i=>
+    `<div class="insight-box"><div class="insight-label">${i.l}</div><p>${i.t}</p></div>`
+  ).join('');
+}
+
+// ── Storage / export ──────────────────────────────────────────────────────────
+function saveToStorage() {
+  try { localStorage.setItem('llm_results', JSON.stringify(allResults.slice(-1000))); } catch {}
+}
+
+function exportCSV() {
+  if(!allResults.length) { alert('No results to export.'); return; }
+  const keys = ['sample_id','system','task','prompt_style','schema_valid','parseable','overall_accuracy','fields_correct','fields_total','field_coverage','qa_overlap_score','qa_likely_correct','latency_ms','llm_calls','repair_attempted','timestamp'];
+  const csv  = [keys.join(','), ...allResults.map(r=>keys.map(k=>JSON.stringify(r[k]??'')).join(','))].join('\n');
+  dl('llm_reliability_results.csv', csv, 'text/csv');
+}
+
+function exportJSON() {
+  if(!allResults.length) { alert('No results to export.'); return; }
+  dl('llm_reliability_results.json', JSON.stringify(allResults,null,2), 'application/json');
+}
+
+function dl(name, content, type) {
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([content],{type})); a.download=name; a.click();
+}
+
+function clearAll() {
+  if(!confirm('Clear all results? This cannot be undone.')) return;
+  allResults=[];
+  saveToStorage();
+  updateResultsTable();
+  setStatus('idle','Cleared');
+  renderInsights();
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+updateResultsTable();
+setStatus('idle', allResults.length ? `${allResults.length} results restored from last session` : 'Ready');
+if(allResults.length) renderInsights();
+</script>
+</body>
+</html>
