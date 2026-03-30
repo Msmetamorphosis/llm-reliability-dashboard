@@ -203,13 +203,6 @@ tr:hover td { background: var(--cream); }
       <span class="key-status" id="key-status" style="color:var(--text-muted)">Not set</span>
     </div>
 
-    <!-- BACKEND URL -->
-    <div class="backend-banner">
-      <label style="font-size:11px;text-transform:uppercase;letter-spacing:0.07em;white-space:nowrap;color:var(--text-muted)">Backend URL</label>
-      <input type="text" id="backend-url" value="https://llm-reliability-dashboard.onrender.com" oninput="backendChanged()" />
-      <button class="btn btn-outline" style="white-space:nowrap;padding:7px 14px;font-size:12px" onclick="checkBackend()">Test connection</button>
-      <span class="backend-status" id="backend-status" style="color:var(--text-muted)">Not connected</span>
-    </div>
 
     <!-- RUN PAGE -->
     <div id="page-run" class="page active">
@@ -408,8 +401,7 @@ function checkKey() {
 
 // ── Backend URL ───────────────────────────────────────────────────────────────
 function getBackendURL() {
-  const raw = document.getElementById('backend-url').value.trim().replace(/\/$/, '');
-  return raw;
+  return 'https://llm-reliability-dashboard.onrender.com';
 }
 
 function backendChanged() {
