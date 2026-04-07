@@ -1,0 +1,177 @@
+[
+  {
+    "id": "t2_001",
+    "question": "What is the minimum service requirement to qualify for the Post-9/11 GI Bill?",
+    "ground_truth_answer": "At least 90 days of aggregate service after September 10, 2001, or discharge with a service-connected disability after 30 days.",
+    "supporting_passage_id": "c_001",
+    "answer_type": "factual_specific"
+  },
+  {
+    "id": "t2_002",
+    "question": "Can a veteran transfer Post-9/11 GI Bill benefits to their spouse?",
+    "ground_truth_answer": "Yes, if the veteran has at least 6 years of service and agrees to serve 4 more years.",
+    "supporting_passage_id": "c_001",
+    "answer_type": "yes_no_with_condition"
+  },
+  {
+    "id": "t2_003",
+    "question": "What is the maximum VA disability compensation payment per month for a veteran rated at 100 percent with no dependents?",
+    "ground_truth_answer": "$3,737.85 per month.",
+    "supporting_passage_id": "c_002",
+    "answer_type": "factual_numeric"
+  },
+  {
+    "id": "t2_004",
+    "question": "What three things does a veteran need to prove to receive VA disability compensation?",
+    "ground_truth_answer": "A current diagnosis of a physical or mental condition, evidence of an in-service event or injury, and a medical nexus connecting the condition to service.",
+    "supporting_passage_id": "c_002",
+    "answer_type": "multi_part"
+  },
+  {
+    "id": "t2_005",
+    "question": "Do veterans need to make a down payment to use the VA home loan benefit?",
+    "ground_truth_answer": "No, in most cases veterans can purchase a home without a down payment.",
+    "supporting_passage_id": "c_003",
+    "answer_type": "yes_no_with_condition"
+  },
+  {
+    "id": "t2_006",
+    "question": "Are veterans with a service-connected disability rating exempt from the VA home loan funding fee?",
+    "ground_truth_answer": "Yes, veterans with a service-connected disability rating are exempt from the VA funding fee.",
+    "supporting_passage_id": "c_003",
+    "answer_type": "yes_no_factual"
+  },
+  {
+    "id": "t2_007",
+    "question": "What disability rating is required to qualify for VA Vocational Rehabilitation Chapter 31?",
+    "ground_truth_answer": "A VA service-connected disability rating of at least 10 percent, or a memorandum rating of 20 percent or more.",
+    "supporting_passage_id": "c_004",
+    "answer_type": "factual_specific"
+  },
+  {
+    "id": "t2_008",
+    "question": "How many months of services does the VA Vocational Rehabilitation program provide?",
+    "ground_truth_answer": "Up to 48 months.",
+    "supporting_passage_id": "c_004",
+    "answer_type": "factual_numeric"
+  },
+  {
+    "id": "t2_009",
+    "question": "What is the age range for children to receive DEA Chapter 35 benefits?",
+    "ground_truth_answer": "Between ages 18 and 26.",
+    "supporting_passage_id": "c_005",
+    "answer_type": "factual_specific"
+  },
+  {
+    "id": "t2_010",
+    "question": "What is the maximum number of months a dependent can use DEA Chapter 35 benefits?",
+    "ground_truth_answer": "45 months of full-time training.",
+    "supporting_passage_id": "c_005",
+    "answer_type": "factual_numeric"
+  },
+  {
+    "id": "t2_011",
+    "question": "What is the maximum annual VA pension amount for a veteran without dependents?",
+    "ground_truth_answer": "$16,551 per year as of December 2023.",
+    "supporting_passage_id": "c_006",
+    "answer_type": "factual_numeric"
+  },
+  {
+    "id": "t2_012",
+    "question": "Does a veteran have to serve during wartime to qualify for VA pension?",
+    "ground_truth_answer": "Yes, at least one day of service must have been during a wartime period.",
+    "supporting_passage_id": "c_006",
+    "answer_type": "yes_no_factual"
+  },
+  {
+    "id": "t2_013",
+    "question": "How much did a veteran have to contribute to participate in the Montgomery GI Bill?",
+    "ground_truth_answer": "$1,200 total, deducted as $100 per month for 12 months.",
+    "supporting_passage_id": "c_007",
+    "answer_type": "factual_numeric"
+  },
+  {
+    "id": "t2_014",
+    "question": "How long after discharge can a veteran use Montgomery GI Bill benefits?",
+    "ground_truth_answer": "Within 10 years of the last discharge from active duty.",
+    "supporting_passage_id": "c_007",
+    "answer_type": "factual_specific"
+  },
+  {
+    "id": "t2_015",
+    "question": "Who is eligible for CHAMPVA benefits?",
+    "ground_truth_answer": "Spouses and children of veterans who are permanently and totally disabled for a service-connected condition, died from a VA-rated service-connected condition, or died on active duty, and who are not eligible for TRICARE.",
+    "supporting_passage_id": "c_008",
+    "answer_type": "multi_part"
+  },
+  {
+    "id": "t2_016",
+    "question": "What percentage of medical costs does CHAMPVA typically cover?",
+    "ground_truth_answer": "75 percent after an annual deductible.",
+    "supporting_passage_id": "c_008",
+    "answer_type": "factual_numeric"
+  },
+  {
+    "id": "t2_017",
+    "question": "What is the maximum Specially Adapted Housing grant amount for 2024?",
+    "ground_truth_answer": "$109,986.",
+    "supporting_passage_id": "c_009",
+    "answer_type": "factual_numeric"
+  },
+  {
+    "id": "t2_018",
+    "question": "How many times can a veteran use the Specially Adapted Housing grant?",
+    "ground_truth_answer": "Up to 3 times, as long as the total does not exceed the maximum grant amount.",
+    "supporting_passage_id": "c_009",
+    "answer_type": "factual_specific"
+  },
+  {
+    "id": "t2_019",
+    "question": "What is the monthly DIC base rate for a surviving spouse as of December 2023?",
+    "ground_truth_answer": "$1,562.74 per month.",
+    "supporting_passage_id": "c_010",
+    "answer_type": "factual_numeric"
+  },
+  {
+    "id": "t2_020",
+    "question": "Can a surviving spouse who remarries keep DIC benefits?",
+    "ground_truth_answer": "Yes, if the surviving spouse remarries after age 57.",
+    "supporting_passage_id": "c_010",
+    "answer_type": "yes_no_with_condition"
+  },
+  {
+    "id": "t2_021",
+    "question": "Does the Aid and Attendance benefit require a separate application from VA pension?",
+    "ground_truth_answer": "No, it is added on top of VA pension and does not require a separate application.",
+    "supporting_passage_id": "c_012",
+    "answer_type": "yes_no_factual"
+  },
+  {
+    "id": "t2_022",
+    "question": "What are four ways a veteran can apply for VA health care?",
+    "ground_truth_answer": "Online at VA.gov, by phone, in person at a VA medical facility, or by mail using VA Form 10-10EZ.",
+    "supporting_passage_id": "c_013",
+    "answer_type": "multi_part"
+  },
+  {
+    "id": "t2_023",
+    "question": "Is participation in the Transition Assistance Program mandatory?",
+    "ground_truth_answer": "Yes, for servicemembers separating after more than 180 days of continuous active duty.",
+    "supporting_passage_id": "c_014",
+    "answer_type": "yes_no_with_condition"
+  },
+  {
+    "id": "t2_024",
+    "question": "How long must a veteran require personal care services to qualify a caregiver for the PCAFC program?",
+    "ground_truth_answer": "At least 6 months of continuous personal care services.",
+    "supporting_passage_id": "c_015",
+    "answer_type": "factual_specific"
+  },
+  {
+    "id": "t2_025",
+    "question": "Who must submit the PCAFC caregiver application?",
+    "ground_truth_answer": "The veteran and caregiver must submit the application jointly.",
+    "supporting_passage_id": "c_015",
+    "answer_type": "factual_specific"
+  }
+]
