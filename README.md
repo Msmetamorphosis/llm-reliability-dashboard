@@ -51,3 +51,5 @@ root cause of silent output failures in production AI systems.
 Domain: VA veteran benefits (public domain, va.gov)
 Model: Claude (Anthropic API)
 Metrics: JSON schema compliance, field accuracy vs ground truth, output variance, latency
+
+Want to run the experiment for yourself? Just go here and enter your Anthropic API key: https://msmetamorphosis.github.io/llm-reliability-dashboard/
